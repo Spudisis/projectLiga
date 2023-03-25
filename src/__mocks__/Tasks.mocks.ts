@@ -35,4 +35,18 @@ export const TasksMock: TaskEntity[] = [
     isImportant: false,
     isDone: false,
   },
+  {
+    name: 'Watch',
+    id: '4441',
+    info: 'Lorem ipsum dolor sit amet, ',
+    isImportant: true,
+    isDone: false,
+  },
+  {
+    name: 'Make',
+    id: '1111',
+    info: 'Lorem ipsum dolor sit amet, consectetur Lorem ipsum dolor sit amet, consectetur Lorem ipsum dolor sit amet, consectetur Lorem ipsum dolor sit amet, consectetur Lorem ipsum dolor sit amet, consectetur',
+    isImportant: false,
+    isDone: false,
+  },
 ];

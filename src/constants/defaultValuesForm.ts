@@ -1,6 +1,6 @@
-import { TaskEntity } from 'domains/Task.entity';
+import { ValuesForm } from 'domains/index';
 
-export const DefaultValues: Omit<TaskEntity, 'id'> = {
+export const DefaultValues: ValuesForm = {
   name: '',
   info: '',
   isImportant: false,

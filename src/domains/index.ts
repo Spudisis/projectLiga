@@ -1,2 +1,4 @@
 export * from './Task.entity';
 export * from './Filter.entity';
+export * from './TaskStats.entity';
+export * from './ValuesForm.entity';

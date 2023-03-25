@@ -27,7 +27,7 @@ export const TaskCreate = () => {
         {...Description}
       />
       <Checkbox label={'is important'} checked={statusImportant} onChange={handleChangeStatusImportant} />
-      <Button innerText="Change" onClick={handleSubmit} />
+      <Button innerText="Create" onClick={handleSubmit} />
     </form>
   );
 };
