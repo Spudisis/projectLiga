@@ -1,10 +1,8 @@
 import { TaskEntity } from 'domains/Task.entity';
+export type PropsEntityType = TaskEntity;
 
-export type PropsTask = {
-  changeStatusImportant: () => void;
-  changeStatusDone: () => void;
-  elem: TaskEntity;
+export type ChangeStatusDone = Pick<PropsEntityType, 'isDone' | 'id'>;
+export type ChangeStatusImportant = Pick<PropsEntityType, 'isImportant' | 'id'>;
+export type DeleteTaskProp = {
   setDeleteStatus: (b: boolean) => void;
-  deleteStatus: boolean;
-  handleDeleteTask: () => void;
 };

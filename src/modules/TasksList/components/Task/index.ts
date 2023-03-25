@@ -1,1 +1,1 @@
-export * from './Task.helper';
+export * from './Task';
