@@ -1,32 +1,35 @@
-import React, { ChangeEvent, MouseEvent, useState } from 'react';
+import React, { ChangeEvent, MouseEvent } from 'react';
 import { observer } from 'mobx-react';
 
 import { CreateStoreInstance } from './store/CreateStore';
 
-import { DefaultValues } from 'constants/index';
 import { Button, Checkbox, TextField } from 'components/index';
 export const TaskCreate = observer(() => {
-  const { statusLoading, createTask } = CreateStoreInstance;
+  const {
+    statusLoading,
+    createTask,
+    setTaskName,
+    setDescription,
+    setImportantStatus,
+    taskName,
+    description,
+    statusImportant,
+  } = CreateStoreInstance;
 
-  const [taskName, setTaskName] = React.useState('');
-  const [description, setDescription] = React.useState('');
-  const [statusImportant, changeStatusImportant] = useState(DefaultValues.isImportant);
-
-  const handleChangeStatusImportant = () => changeStatusImportant(!statusImportant);
+  const handleChangeStatusImportant = () => setImportantStatus(!statusImportant);
   const changeTaskName = (name: ChangeEvent<HTMLInputElement>) => setTaskName(name.target.value);
   const changeDescription = (description: ChangeEvent<HTMLInputElement>) => setDescription(description.target.value);
 
   const handleSubmit = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    const obj = { name: taskName, info: description, isImportant: statusImportant };
-    await createTask(obj);
+    await createTask();
     resetForm();
   };
 
   const resetForm = () => {
     setTaskName('');
     setDescription('');
-    changeStatusImportant(false);
+    setImportantStatus(false);
   };
 
   return (
