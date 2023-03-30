@@ -5,19 +5,7 @@ import { ChangeStoreInstance } from './store';
 import { Button, Checkbox, Loader, TextField } from 'components/index';
 
 export const TaskChange = observer(() => {
-  const {
-    statusLoading,
-    description,
-    statusImportant,
-    statusDone,
-    taskName,
-    getTask,
-    changeTask,
-    setTaskName,
-    setDescription,
-    setImportantStatus,
-    setDoneStatus,
-  } = ChangeStoreInstance;
+  const { statusLoading, task, getTask, changeTask, changeTaskFields } = ChangeStoreInstance;
 
   const params = useParams();
 
@@ -35,10 +23,17 @@ export const TaskChange = observer(() => {
     changeTask(id);
   };
 
-  const handleChangeStatusDone = () => setDoneStatus(!statusDone);
-  const handleChangeStatusImportant = () => setImportantStatus(!statusImportant);
-  const changeTaskName = (e: ChangeEvent<HTMLInputElement>) => setTaskName(e.target.value);
-  const changeDescription = (e: ChangeEvent<HTMLInputElement>) => setDescription(e.target.value);
+  const handleChangeStatusDone = () => {
+    changeTaskFields({ 'isDone': !task.isDone });
+
+    if (task.isImportant) {
+      changeTaskFields({ 'isImportant': false });
+    }
+  };
+
+  const handleChangeStatusImportant = () => changeTaskFields({ 'isImportant': !task.isImportant });
+  const changeTaskName = (e: ChangeEvent<HTMLInputElement>) => changeTaskFields({ 'name': e.target.value });
+  const changeDescription = (e: ChangeEvent<HTMLInputElement>) => changeTaskFields({ 'info': e.target.value });
 
   return (
     <form>
@@ -46,7 +41,7 @@ export const TaskChange = observer(() => {
         label={'Task name'}
         inputType={'text'}
         placeholder={'wish'}
-        value={taskName}
+        value={task.name}
         onChange={changeTaskName}
         disabled={statusLoading}
       />
@@ -54,16 +49,16 @@ export const TaskChange = observer(() => {
         label={'Description'}
         inputType={'text'}
         placeholder={'Some'}
-        value={description}
+        value={task.info}
         onChange={changeDescription}
         disabled={statusLoading}
       />
-      <Checkbox label={'is done'} checked={statusDone} onChange={handleChangeStatusDone} disabled={statusLoading} />
+      <Checkbox label={'is done'} checked={task.isDone} onChange={handleChangeStatusDone} disabled={statusLoading} />
       <Checkbox
         label={'is important'}
-        checked={statusImportant}
+        checked={task.isImportant}
         onChange={handleChangeStatusImportant}
-        disabled={statusDone || statusLoading}
+        disabled={task.isDone || statusLoading}
       />
       <Loader isLoading={statusLoading}>
         <Button innerText="Change" onClick={handleSubmit} />

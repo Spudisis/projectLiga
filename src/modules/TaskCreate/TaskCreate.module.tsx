@@ -5,40 +5,27 @@ import { CreateStoreInstance } from './store/CreateStore';
 
 import { Button, Checkbox, TextField } from 'components/index';
 export const TaskCreate = observer(() => {
-  const {
-    statusLoading,
-    createTask,
-    setTaskName,
-    setDescription,
-    setImportantStatus,
-    taskName,
-    description,
-    statusImportant,
-  } = CreateStoreInstance;
+  const { statusLoading, createTask, setFieldsForm, fieldsForm, resetForm } = CreateStoreInstance;
 
-  const handleChangeStatusImportant = () => setImportantStatus(!statusImportant);
-  const changeTaskName = (name: ChangeEvent<HTMLInputElement>) => setTaskName(name.target.value);
-  const changeDescription = (description: ChangeEvent<HTMLInputElement>) => setDescription(description.target.value);
+  const handleChangeStatusImportant = () => setFieldsForm({ 'isImportant': !fieldsForm.isImportant });
+  const changeTaskName = (name: ChangeEvent<HTMLInputElement>) => setFieldsForm({ 'name': name.target.value });
+  const changeDescription = (description: ChangeEvent<HTMLInputElement>) =>
+    setFieldsForm({ 'info': description.target.value });
 
   const handleSubmit = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     await createTask();
-    resetForm();
+    ResetSend();
   };
 
-  const resetForm = () => {
-    setTaskName('');
-    setDescription('');
-    setImportantStatus(false);
-  };
-
+  const ResetSend = () => resetForm();
   return (
     <form>
       <TextField
         label={'Task name'}
         inputType={'text'}
         placeholder={'Delete'}
-        value={taskName}
+        value={fieldsForm.name}
         onChange={changeTaskName}
         disabled={statusLoading}
       />
@@ -46,13 +33,13 @@ export const TaskCreate = observer(() => {
         label={'Description'}
         inputType={'text'}
         placeholder={'Remove all repositories from github'}
-        value={description}
+        value={fieldsForm.info}
         onChange={changeDescription}
         disabled={statusLoading}
       />
       <Checkbox
         label={'is important'}
-        checked={statusImportant}
+        checked={fieldsForm.isImportant}
         onChange={handleChangeStatusImportant}
         disabled={statusLoading}
       />

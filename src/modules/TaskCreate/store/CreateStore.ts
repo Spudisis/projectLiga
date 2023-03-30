@@ -1,68 +1,47 @@
 import { action, computed, makeObservable, observable } from 'mobx';
 import { CreateTaskValues } from '../TaskCreate.types';
+import { initialFields } from './CreateStore.constant';
 import { Delay } from 'helpers/index';
-import { DefaultValues } from 'constants/index';
 
-type PrivateFields = '_statusLoading' | '_taskName' | '_description' | '_statusImportant';
+type PrivateFields = '_statusLoading' | '_fieldsForm';
 
 export class CreateStore {
   constructor() {
     makeObservable<this, PrivateFields>(this, {
       _statusLoading: observable,
-      _taskName: observable,
-      _description: observable,
-      _statusImportant: observable,
+      _fieldsForm: observable,
 
       statusLoading: computed,
-      taskName: computed,
-      description: computed,
-      statusImportant: computed,
+      fieldsForm: computed,
 
       createTask: action,
-      setTaskName: action,
-      setDescription: action,
-      setImportantStatus: action,
+      setFieldsForm: action,
     });
   }
   private _statusLoading = false;
-  private _taskName = DefaultValues.name;
-  private _description = DefaultValues.info;
-  private _statusImportant = DefaultValues.isImportant;
+
+  private _fieldsForm: CreateTaskValues = initialFields;
 
   get statusLoading() {
     return this._statusLoading;
   }
 
-  get taskName() {
-    return this._taskName;
-  }
-  get description() {
-    return this._description;
-  }
-  get statusImportant() {
-    return this._statusImportant;
+  get fieldsForm() {
+    return this._fieldsForm;
   }
 
   createTask = async () => {
     this._statusLoading = true;
-    const data = {
-      name: this._taskName,
-      description: this._description,
-      isImportant: this._statusImportant,
-    };
     await Delay();
-    console.log(data);
+    console.log(this._fieldsForm);
     this._statusLoading = false;
   };
 
-  setTaskName = (name: CreateTaskValues['name']) => {
-    this._taskName = name;
+  setFieldsForm = (fields: Partial<CreateTaskValues>) => {
+    this._fieldsForm = { ...this._fieldsForm, ...fields };
   };
-  setDescription = (description: CreateTaskValues['info']) => {
-    this._description = description;
-  };
-  setImportantStatus = (status: CreateTaskValues['isImportant']) => {
-    this._statusImportant = status;
+  resetForm = () => {
+    this._fieldsForm = initialFields;
   };
 }
 export const CreateStoreInstance = new CreateStore();
