@@ -1,11 +1,21 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { PropsEntityType } from './Task.types';
-import { changeStatusDone, changeStatusImportant, handleDeleteTask } from './Task.helper';
 import { EDIT, ROOT } from 'constants/pathsPages';
 
-export const Task = ({ name, id, info, isImportant, isDone }: PropsEntityType) => {
+export const Task = ({ elem, changeComplete, changeImportant, deleteTask }: PropsEntityType) => {
+  const { id, isDone, isImportant, name, info } = elem;
+
   const [deleteStatus, setDeleteStatus] = useState(false);
+
+  const clickChangeComplete = () => changeComplete(id, isDone);
+  const clickChangeImportant = () => changeImportant(id, isImportant);
+
+  const handleDeleteTask = () => {
+    setDeleteStatus(false);
+    deleteTask(id);
+  };
+
   return (
     <div className="card mt-3">
       <h4 className="card-header">{name}</h4>
@@ -13,14 +23,14 @@ export const Task = ({ name, id, info, isImportant, isDone }: PropsEntityType) =
       <div className="card-footer d-flex justify-content-around">
         <button
           type="button"
-          onClick={() => changeStatusImportant({ id, isImportant })}
+          onClick={() => clickChangeImportant()}
           disabled={isDone}
           className={`btn + ${isImportant ? 'btn-success' : 'btn-outline-dark'}`}>
           Важное
         </button>
         <button
           type="button"
-          onClick={() => changeStatusDone({ id, isDone })}
+          onClick={() => clickChangeComplete()}
           className={`btn + ${isDone ? 'btn-success' : 'btn-outline-dark'}`}>
           Выполнено
         </button>
@@ -29,7 +39,7 @@ export const Task = ({ name, id, info, isImportant, isDone }: PropsEntityType) =
         </Link>
         {deleteStatus ? (
           <>
-            <button type="button" className="btn btn-danger" onClick={() => handleDeleteTask({ setDeleteStatus })}>
+            <button type="button" className="btn btn-danger" onClick={() => handleDeleteTask()}>
               <i className="fa fa-check"></i>
             </button>
             <button type="button" className="btn btn-warning" onClick={() => setDeleteStatus(false)}>

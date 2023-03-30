@@ -4,6 +4,7 @@ import './TextField.css';
 
 export function TextField({
   label,
+  disabled = false,
   placeholder,
   containerClassName = '',
   inputType,
@@ -17,6 +18,7 @@ export function TextField({
         {label}
       </label>
       <input
+        disabled={disabled}
         type={inputType}
         className="form-control"
         id={label}
