@@ -1,4 +1,3 @@
-import { MouseEvent } from 'react';
-import { FiltersType } from 'domains/index';
-
+import { FiltersType, SearchParams } from 'domains/index';
 export type FilterValueType = FiltersType;
+export type SearchParamsForm = SearchParams;

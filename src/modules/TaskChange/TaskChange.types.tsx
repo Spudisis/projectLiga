@@ -1,4 +1,3 @@
-import { TaskEntity } from 'domains/index';
+import { TaskChange } from 'domains/index';
 
-export type Task = TaskEntity;
-export type TaskChange = Omit<Task, 'id'>;
+export type TaskChangeForm = TaskChange;

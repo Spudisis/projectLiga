@@ -1,28 +1,28 @@
 import { action, computed, makeObservable, observable } from 'mobx';
-import { TaskChange, Task } from '../TaskChange.types';
+import { TaskChangeForm } from '../TaskChange.types';
+import { DefaultValues } from '../TaskChange.constants';
 import { Delay } from 'helpers/index';
-import { DefaultValues } from 'constants/index';
 import { TasksMock } from '__mocks__/index';
 
-type PrivateFields = '_statusLoading' | '_task';
+type PrivateFields = '_statusLoading' | '_task' | '_id';
 
 export class ChangeStore {
   constructor() {
     makeObservable<this, PrivateFields>(this, {
       _statusLoading: observable,
       _task: observable,
+      _id: observable,
 
       statusLoading: computed,
       task: computed,
 
-      getTask: action,
-      changeTask: action,
-      changeTaskFields: action,
+      getTask: action.bound,
+      changeTask: action.bound,
     });
   }
   private _statusLoading = false;
-  private _task: TaskChange = DefaultValues;
-
+  private _task: TaskChangeForm = DefaultValues;
+  private _id = '';
   get statusLoading() {
     return this._statusLoading;
   }
@@ -31,22 +31,46 @@ export class ChangeStore {
     return this._task;
   }
 
-  getTask = async (id: Task['id']) => {
+  getTask = async (id: string) => {
+    this._id = id;
     this._statusLoading = true;
-    console.log(id);
+
     await Delay();
-    this._task = TasksMock.find((elem) => elem.id === id)!;
+    const task = TasksMock.find((elem) => elem.id === this._id);
     this._statusLoading = false;
+
+    if (task) {
+      this._task = task;
+      return true;
+    } else {
+      return false;
+    }
+    // try {
+    //   //Запрос на сервер
+    //   this._task = task;
+    //return true;
+    // } catch {
+    //    return false;
+    // } finally {
+    //   this._statusLoading = false;
+    // }
   };
 
-  changeTask = async (id: Task['id']) => {
+  changeTask = async (task: TaskChangeForm) => {
     this._statusLoading = true;
     await Delay();
-    console.log({ id, ...this._task });
+    console.log({ id: this._id, ...task });
     this._statusLoading = false;
-  };
-  changeTaskFields = (obj: Partial<TaskChange>) => {
-    this._task = { ...this._task, ...obj };
+    return true;
+    // try {
+    //   //Запрос на сервер
+    //   this._task = task;
+    //return true;
+    // } catch {
+    //    return false;
+    // } finally {
+    //   this._statusLoading = false;
+    // }
   };
 }
 export const ChangeStoreInstance = new ChangeStore();

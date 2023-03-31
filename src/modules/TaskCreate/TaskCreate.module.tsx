@@ -1,49 +1,86 @@
-import React, { ChangeEvent, MouseEvent } from 'react';
+import { ChangeEventHandler, MouseEvent } from 'react';
 import { observer } from 'mobx-react';
-
+import { yupResolver } from '@hookform/resolvers/yup';
+import { Controller, useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
 import { CreateStoreInstance } from './store/CreateStore';
+import { taskCreateSchema } from './TaskCreate.validation';
+import { CreateTaskValues } from './TaskCreate.types';
+import { DefaultValuesAddTask } from './TaskCreate.constants';
+import { Button, Checkbox, Loader, TextField } from 'components/index';
+import { ROOT } from 'constants/index';
 
-import { Button, Checkbox, TextField } from 'components/index';
-export const TaskCreate = observer(() => {
-  const { statusLoading, createTask, setFieldsForm, fieldsForm, resetForm } = CreateStoreInstance;
+const TaskCreateProto = () => {
+  const { statusLoading, createTask } = CreateStoreInstance;
 
-  const handleChangeStatusImportant = () => setFieldsForm({ 'isImportant': !fieldsForm.isImportant });
-  const changeTaskName = (name: ChangeEvent<HTMLInputElement>) => setFieldsForm({ 'name': name.target.value });
-  const changeDescription = (description: ChangeEvent<HTMLInputElement>) =>
-    setFieldsForm({ 'info': description.target.value });
+  const { control, handleSubmit, setValue } = useForm<CreateTaskValues>({
+    mode: 'all',
+    defaultValues: DefaultValuesAddTask,
+    resolver: yupResolver(taskCreateSchema),
+  });
+  const redirect = useNavigate();
 
-  const handleSubmit = async (e: MouseEvent<HTMLButtonElement>) => {
+  const onTaskNameChange: ChangeEventHandler<HTMLInputElement> = (e) => setValue('name', e.target.value);
+  const onInfoChange: ChangeEventHandler<HTMLInputElement> = (e) => setValue('info', e.target.value);
+  const onCheckboxChange: ChangeEventHandler<HTMLInputElement> = (e) => setValue('isImportant', e.target.checked);
+
+  const onSubmit = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    await createTask();
-    ResetSend();
+    handleSubmit(async (form) => {
+      const res = await createTask(form);
+      //придумать что-то, чтобы отобразить ошибку при попытке редактирования
+      if (res) {
+        redirect(ROOT);
+      } else {
+        console.log('res is not ok');
+      }
+    })();
   };
 
-  const ResetSend = () => resetForm();
   return (
     <form>
-      <TextField
-        label={'Task name'}
-        inputType={'text'}
-        placeholder={'Delete'}
-        value={fieldsForm.name}
-        onChange={changeTaskName}
-        disabled={statusLoading}
+      <Controller
+        control={control}
+        name="name"
+        render={({ field, fieldState: { error } }) => (
+          <TextField
+            label={'Task name'}
+            inputType={'text'}
+            placeholder={'Delete'}
+            value={field.value}
+            onChange={onTaskNameChange}
+            disabled={statusLoading}
+            errorText={error?.message}
+          />
+        )}
       />
-      <TextField
-        label={'Description'}
-        inputType={'text'}
-        placeholder={'Remove all repositories from github'}
-        value={fieldsForm.info}
-        onChange={changeDescription}
-        disabled={statusLoading}
+      <Controller
+        control={control}
+        name="info"
+        render={({ field, fieldState: { error } }) => (
+          <TextField
+            label={'Description'}
+            inputType={'text'}
+            placeholder={'Remove all repositories from github'}
+            value={field.value}
+            onChange={onInfoChange}
+            disabled={statusLoading}
+            errorText={error?.message}
+          />
+        )}
       />
-      <Checkbox
-        label={'is important'}
-        checked={fieldsForm.isImportant}
-        onChange={handleChangeStatusImportant}
-        disabled={statusLoading}
+      <Controller
+        control={control}
+        name="isImportant"
+        render={({ field }) => (
+          <Checkbox label={'is important'} checked={field.value} onChange={onCheckboxChange} disabled={statusLoading} />
+        )}
       />
-      <Button innerText="Create" onClick={handleSubmit} disabled={statusLoading} />
+      <Loader isLoading={statusLoading}>
+        <Button innerText="Change" onClick={onSubmit} />
+      </Loader>
     </form>
   );
-});
+};
+
+export const TaskCreate = observer(TaskCreateProto);

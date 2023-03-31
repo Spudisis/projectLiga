@@ -1,47 +1,41 @@
 import { action, computed, makeObservable, observable } from 'mobx';
 import { CreateTaskValues } from '../TaskCreate.types';
-import { initialFields } from './CreateStore.constant';
+
 import { Delay } from 'helpers/index';
 
-type PrivateFields = '_statusLoading' | '_fieldsForm';
+type PrivateFields = '_statusLoading';
 
 export class CreateStore {
   constructor() {
     makeObservable<this, PrivateFields>(this, {
       _statusLoading: observable,
-      _fieldsForm: observable,
 
       statusLoading: computed,
-      fieldsForm: computed,
 
-      createTask: action,
-      setFieldsForm: action,
+      createTask: action.bound,
     });
   }
   private _statusLoading = false;
-
-  private _fieldsForm: CreateTaskValues = initialFields;
 
   get statusLoading() {
     return this._statusLoading;
   }
 
-  get fieldsForm() {
-    return this._fieldsForm;
-  }
-
-  createTask = async () => {
+  createTask = async (fields: CreateTaskValues) => {
     this._statusLoading = true;
     await Delay();
-    console.log(this._fieldsForm);
+    console.log(fields);
     this._statusLoading = false;
-  };
-
-  setFieldsForm = (fields: Partial<CreateTaskValues>) => {
-    this._fieldsForm = { ...this._fieldsForm, ...fields };
-  };
-  resetForm = () => {
-    this._fieldsForm = initialFields;
+    return true;
+    // try {
+    //   //Запрос на сервер
+    //   this._task = task;
+    //return true;
+    // } catch {
+    //    return false;
+    // } finally {
+    //   this._statusLoading = false;
+    // }
   };
 }
 export const CreateStoreInstance = new CreateStore();

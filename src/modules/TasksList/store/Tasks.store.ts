@@ -1,4 +1,5 @@
 import { makeObservable, observable, computed, action } from 'mobx';
+import { DefaultValuesSearch } from '../TaskList.constants';
 import { SearchParams, TaskEntity, TasksStatsEntity } from 'domains/index';
 import { TasksMock, TasksStatsMock } from '__mocks__/index';
 import { Delay } from 'helpers/index';
@@ -16,12 +17,11 @@ export class Tasks {
       tasks: computed,
       statusLoadingTasks: computed,
       tasksStats: computed,
-      formSearch: computed,
 
-      taskLoad: action,
-      changeImportantTask: action,
-      changeCompleteTask: action,
-      taskDelete: action,
+      taskLoad: action.bound,
+      changeImportantTask: action.bound,
+      changeCompleteTask: action.bound,
+      taskDelete: action.bound,
     });
   }
   private _statusLoadingTasks = false;
@@ -31,10 +31,7 @@ export class Tasks {
     important: 0,
     done: 0,
   };
-  private _formSearch: SearchParams = {
-    searchValue: '',
-    filterValue: 'All',
-  };
+  private _formSearch: SearchParams = DefaultValuesSearch;
 
   get statusLoadingTasks() {
     return this._statusLoadingTasks;
@@ -48,39 +45,69 @@ export class Tasks {
     return this._tasksStats;
   }
 
-  get formSearch() {
-    return this._formSearch;
-  }
-
   taskLoad = async (params?: SearchParams) => {
     if (params) this._formSearch = params;
-
-    console.log('params ' + this.formSearch.filterValue + ' ' + this.formSearch.searchValue);
     this._statusLoadingTasks = true;
     await Delay();
+    console.log(params);
     this._tasks = TasksMock;
     this._tasksStats = TasksStatsMock;
 
     this._statusLoadingTasks = false;
+    // try {
+    //   //Запрос на сервер
+    //   this._task = task;
+    //return true;
+    // } catch {
+    //    return false;
+    // } finally {
+    //   this._statusLoading = false;
+    // }
   };
 
   changeImportantTask = async (id: TaskEntity['id'], statusImportant: TaskEntity['isImportant']) => {
     this._statusLoadingTasks = true;
 
     console.log('changeimportant', id, !statusImportant);
+    // try {
+    //   //Запрос на сервер
+    //   this._task = task;
+    //return true;
+    // } catch {
+    //    return false;
+    // } finally {
+    //   this._statusLoading = false;
+    // }
     this.taskLoad();
   };
 
   changeCompleteTask = async (id: TaskEntity['id'], statusComplete: TaskEntity['isDone']) => {
     this._statusLoadingTasks = true;
     console.log('changeIsDone', id, statusComplete);
+    // try {
+    //   //Запрос на сервер
+    //   this._task = task;
+    //return true;
+    // } catch {
+    //    return false;
+    // } finally {
+    //   this._statusLoading = false;
+    // }
     this.taskLoad();
   };
 
   taskDelete = async (id: TaskEntity['id']) => {
     this._statusLoadingTasks = true;
-
     console.log('delete', id);
+    // try {
+    //   //Запрос на сервер
+    //   this._task = task;
+    //return true;
+    // } catch {
+    //    return false;
+    // } finally {
+    //   this._statusLoading = false;
+    // }
     this.taskLoad();
   };
 }

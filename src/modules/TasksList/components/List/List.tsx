@@ -5,7 +5,7 @@ import { Task } from '../Task/index';
 import { TasksStoreInstance } from '../../store';
 import { Loader } from 'components/index';
 
-export const List = observer(() => {
+const ListProto = () => {
   const { tasks, statusLoadingTasks, taskDelete, changeCompleteTask, changeImportantTask } = TasksStoreInstance;
   return (
     <div className={`container ${statusLoadingTasks ? 'd-flex justify-content-center' : ''}`}>
@@ -24,4 +24,6 @@ export const List = observer(() => {
       </Loader>
     </div>
   );
-});
+};
+
+export const List = observer(ListProto);

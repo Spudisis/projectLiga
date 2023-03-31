@@ -3,7 +3,7 @@ import { observer } from 'mobx-react';
 import { TasksStoreInstance } from '../../store';
 import { Loader } from 'components/index';
 
-export const TaskStats = observer(() => {
+const TaskStatsProto = () => {
   const { tasksStats, statusLoadingTasks } = TasksStoreInstance;
   return (
     <div className="d-flex w-100 justify-content-between mt-3">
@@ -27,4 +27,6 @@ export const TaskStats = observer(() => {
       </p>
     </div>
   );
-});
+};
+
+export const TaskStats = observer(TaskStatsProto);

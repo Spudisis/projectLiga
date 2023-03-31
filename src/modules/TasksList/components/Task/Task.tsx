@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { PropsEntityType } from './Task.types';
-import { EDIT, ROOT } from 'constants/pathsPages';
+import { EDIT, ROOT } from 'constants/index';
 
 export const Task = ({ elem, changeComplete, changeImportant, deleteTask }: PropsEntityType) => {
   const { id, isDone, isImportant, name, info } = elem;
