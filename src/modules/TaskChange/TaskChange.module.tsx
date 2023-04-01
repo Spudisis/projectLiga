@@ -4,13 +4,18 @@ import { observer } from 'mobx-react';
 import { Controller, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { ChangeStoreInstance } from './store';
-import { TaskChangeForm } from './TaskChange.types';
 import { taskChangeSchema } from './TaskChange.validation';
-import { Button, Checkbox, Loader, TextField } from 'components/index';
-import { ROOT } from 'constants/index';
+
+import { Button, Checkbox, ErrorMessage, Loader, TextField } from 'components/index';
+import { ROOT, StatusLoading } from 'constants/index';
+import { TaskChange as TaskChangeForm } from 'domains/ChangeTask.entity';
 
 const TaskChangeProto = () => {
   const { statusLoading, task, getTask, changeTask } = ChangeStoreInstance;
+
+  const Loading = statusLoading === StatusLoading.Loading;
+  const Error = statusLoading === StatusLoading.Error;
+
   const { control, handleSubmit, setValue, reset, watch } = useForm<TaskChangeForm>({
     mode: 'all',
     defaultValues: task,
@@ -42,11 +47,8 @@ const TaskChangeProto = () => {
     e.preventDefault();
     handleSubmit(async (form) => {
       const res = await changeTask(form);
-      //придумать что-то, чтобы отобразить ошибку при попытке редактирования
       if (res) {
         redirect(ROOT);
-      } else {
-        console.log('res is not ok');
       }
     })();
   };
@@ -72,7 +74,7 @@ const TaskChangeProto = () => {
             placeholder={'wish'}
             value={field.value}
             onChange={changeTaskName}
-            disabled={statusLoading}
+            disabled={Loading}
             errorText={error?.message}
           />
         )}
@@ -88,7 +90,7 @@ const TaskChangeProto = () => {
             placeholder={'Some'}
             value={field.value}
             onChange={changeDescription}
-            disabled={statusLoading}
+            disabled={Loading}
             errorText={error?.message}
           />
         )}
@@ -97,12 +99,7 @@ const TaskChangeProto = () => {
         control={control}
         name="isDone"
         render={({ field }) => (
-          <Checkbox
-            label={'is done'}
-            checked={field.value}
-            onChange={handleChangeStatusDone}
-            disabled={statusLoading}
-          />
+          <Checkbox label={'is done'} checked={field.value} onChange={handleChangeStatusDone} disabled={Loading} />
         )}
       />
       <Controller
@@ -113,19 +110,26 @@ const TaskChangeProto = () => {
             label={'is important'}
             checked={field.value}
             onChange={handleChangeStatusImportant}
-            disabled={statusDone || statusLoading}
+            disabled={statusDone || Loading}
           />
         )}
       />
 
       {resGetTask ? (
-        <Loader isLoading={statusLoading}>
+        <Loader isLoading={Loading}>
           <Button innerText="Change" onClick={onSubmit} />
         </Loader>
       ) : (
-        <div>
-          Указанного ID не существует <Link to={ROOT}>Вернуться</Link>
-        </div>
+        <ErrorMessage>
+          <span>
+            Указанного ID не существует <Link to={ROOT}>Вернуться</Link>
+          </span>
+        </ErrorMessage>
+      )}
+      {Error && resGetTask && (
+        <ErrorMessage>
+          <span>Что-то пошло не так при изменении, попробуйте еще раз</span>
+        </ErrorMessage>
       )}
     </form>
   );

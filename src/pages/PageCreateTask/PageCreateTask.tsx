@@ -1,7 +1,5 @@
-import React from 'react';
-import { PageContainer } from 'components/PageContainer';
-
-import { TaskCreate } from 'modules/TaskCreate';
+import { PageContainer } from 'components/index';
+import { TaskCreate } from 'modules/index';
 
 export const PageCreateTask = () => {
   return (

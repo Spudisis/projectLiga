@@ -1,4 +1,3 @@
-import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { PageTasks, PageChangeTask, PageCreateTask, PageNotFound } from 'pages/index';
 import { PATH_LIST } from 'constants/index';

@@ -1,6 +1,5 @@
-import React from 'react';
-import { PageContainer } from 'components/PageContainer';
-import { TaskChange } from 'modules/TaskChange';
+import { PageContainer } from 'components/index';
+import { TaskChange } from 'modules/index';
 export const PageChangeTask = () => {
   return (
     <PageContainer>

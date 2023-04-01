@@ -1,8 +1,9 @@
 import { action, computed, makeObservable, observable } from 'mobx';
-import { TaskChangeForm } from '../TaskChange.types';
 import { DefaultValues } from '../TaskChange.constants';
+import { TaskChange as TaskChangeForm } from 'domains/index';
 import { Delay } from 'helpers/index';
 import { TasksMock } from '__mocks__/index';
+import { StatusLoading } from 'constants/StatusLoading';
 
 type PrivateFields = '_statusLoading' | '_task' | '_id';
 
@@ -20,7 +21,7 @@ export class ChangeStore {
       changeTask: action.bound,
     });
   }
-  private _statusLoading = false;
+  private _statusLoading = StatusLoading.Loading;
   private _task: TaskChangeForm = DefaultValues;
   private _id = '';
   get statusLoading() {
@@ -32,45 +33,34 @@ export class ChangeStore {
   }
 
   getTask = async (id: string) => {
-    this._id = id;
-    this._statusLoading = true;
+    try {
+      this._id = id;
+      this._statusLoading = StatusLoading.Loading;
 
-    await Delay();
-    const task = TasksMock.find((elem) => elem.id === this._id);
-    this._statusLoading = false;
+      await Delay();
+      const task = TasksMock.find((elem) => elem.id === this._id);
+      if (task) this._task = task;
 
-    if (task) {
-      this._task = task;
+      this._statusLoading = StatusLoading.Success;
       return true;
-    } else {
+    } catch {
+      this._statusLoading = StatusLoading.Error;
       return false;
     }
-    // try {
-    //   //Запрос на сервер
-    //   this._task = task;
-    //return true;
-    // } catch {
-    //    return false;
-    // } finally {
-    //   this._statusLoading = false;
-    // }
   };
 
   changeTask = async (task: TaskChangeForm) => {
-    this._statusLoading = true;
-    await Delay();
-    console.log({ id: this._id, ...task });
-    this._statusLoading = false;
-    return true;
-    // try {
-    //   //Запрос на сервер
-    //   this._task = task;
-    //return true;
-    // } catch {
-    //    return false;
-    // } finally {
-    //   this._statusLoading = false;
-    // }
+    try {
+      this._statusLoading = StatusLoading.Loading;
+      await Delay();
+      console.log({ id: this._id, ...task });
+
+      this._statusLoading = StatusLoading.Success;
+      return true;
+    } catch {
+      this._statusLoading = StatusLoading.Error;
+      return false;
+    }
   };
 }
 export const ChangeStoreInstance = new ChangeStore();

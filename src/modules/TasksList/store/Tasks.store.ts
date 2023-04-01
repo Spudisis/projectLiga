@@ -3,6 +3,7 @@ import { DefaultValuesSearch } from '../TaskList.constants';
 import { SearchParams, TaskEntity, TasksStatsEntity } from 'domains/index';
 import { TasksMock, TasksStatsMock } from '__mocks__/index';
 import { Delay } from 'helpers/index';
+import { StatusLoading } from 'constants/index';
 
 type FieldsPrivate = '_statusLoadingTasks' | '_tasks' | '_tasksStats' | '_formSearch';
 
@@ -24,7 +25,7 @@ export class Tasks {
       taskDelete: action.bound,
     });
   }
-  private _statusLoadingTasks = false;
+  private _statusLoadingTasks: StatusLoading = StatusLoading.Loading;
   private _tasks: TaskEntity[] = [];
   private _tasksStats: TasksStatsEntity = {
     total: 0,
@@ -47,26 +48,24 @@ export class Tasks {
 
   taskLoad = async (params?: SearchParams) => {
     if (params) this._formSearch = params;
-    this._statusLoadingTasks = true;
-    await Delay();
-    console.log(params);
-    this._tasks = TasksMock;
-    this._tasksStats = TasksStatsMock;
 
-    this._statusLoadingTasks = false;
-    // try {
-    //   //Запрос на сервер
-    //   this._task = task;
-    //return true;
-    // } catch {
-    //    return false;
-    // } finally {
-    //   this._statusLoading = false;
-    // }
+    this._statusLoadingTasks = StatusLoading.Success;
+    try {
+      //Запрос на сервер
+      this._statusLoadingTasks = StatusLoading.Loading;
+      await Delay();
+
+      console.log(params);
+      this._tasks = TasksMock;
+      this._tasksStats = TasksStatsMock;
+      this._statusLoadingTasks = StatusLoading.Success;
+    } catch {
+      this._statusLoadingTasks = StatusLoading.Error;
+    }
   };
 
   changeImportantTask = async (id: TaskEntity['id'], statusImportant: TaskEntity['isImportant']) => {
-    this._statusLoadingTasks = true;
+    this._statusLoadingTasks = StatusLoading.Loading;
 
     console.log('changeimportant', id, !statusImportant);
     // try {
@@ -82,7 +81,7 @@ export class Tasks {
   };
 
   changeCompleteTask = async (id: TaskEntity['id'], statusComplete: TaskEntity['isDone']) => {
-    this._statusLoadingTasks = true;
+    this._statusLoadingTasks = StatusLoading.Loading;
     console.log('changeIsDone', id, statusComplete);
     // try {
     //   //Запрос на сервер
@@ -97,7 +96,7 @@ export class Tasks {
   };
 
   taskDelete = async (id: TaskEntity['id']) => {
-    this._statusLoadingTasks = true;
+    this._statusLoadingTasks = StatusLoading.Loading;
     console.log('delete', id);
     // try {
     //   //Запрос на сервер
