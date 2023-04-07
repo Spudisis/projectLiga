@@ -1,8 +1,9 @@
-import React, { ChangeEventHandler, MouseEvent } from 'react';
-import './SearchInput.css';
-import { SearchInputProps } from './SearchInput.types';
+import { ChangeEventHandler, MouseEvent } from 'react';
 
-export function SearchInput({ onChange, value, onReset, disabled }: SearchInputProps) {
+import { SearchInputProps } from './SearchInput.types';
+import { StyledContainer, StyledInput, StyledButton } from './SearchInput.styles';
+
+export function SearchInput({ onChange, value, onReset, disabled, refElem }: SearchInputProps) {
   const onSearchInputChange: ChangeEventHandler<HTMLInputElement> = (evt) => onChange(evt.target.value);
 
   const onResetBtnClick = (evt: MouseEvent<HTMLButtonElement>) => {
@@ -11,17 +12,21 @@ export function SearchInput({ onChange, value, onReset, disabled }: SearchInputP
   };
 
   return (
-    <div className="search-panel">
-      <input
+    <StyledContainer disableGutters>
+      <StyledInput
+        variant="outlined"
         className="form-control search-input"
         placeholder="search"
         onChange={onSearchInputChange}
         value={value}
         disabled={disabled}
+        ref={refElem}
       />
-      <button className="close" onClick={onResetBtnClick}>
-        <i className="fa fa-close"></i>
-      </button>
-    </div>
+      {value && (
+        <StyledButton variant="text" onClick={onResetBtnClick}>
+          <i className="fa fa-close"></i>
+        </StyledButton>
+      )}
+    </StyledContainer>
   );
 }

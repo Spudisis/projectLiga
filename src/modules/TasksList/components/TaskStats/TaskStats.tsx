@@ -1,33 +1,40 @@
-import React from 'react';
 import { observer } from 'mobx-react';
+import { Stack } from '@mui/material';
 import { TasksStoreInstance } from '../../store';
+import { StyledSpan, StyledSkeleton } from './TaskStats.style';
 import { StatusLoading } from 'constants/index';
-import { Loader } from 'components/index';
 
 const TaskStatsProto = () => {
   const { tasksStats, statusLoadingTasks } = TasksStoreInstance;
   const Loading = statusLoadingTasks === StatusLoading.Loading;
+
   return (
-    <div className="d-flex w-100 justify-content-between mt-3">
-      <p>
+    <Stack direction="row" justifyContent="space-between" alignItems="center">
+      <Stack component="p" direction="row" alignItems="center">
         Done:
-        <Loader isLoading={Loading} variant="dot">
-          <span className="badge bg-secondary">{tasksStats.done}</span>
-        </Loader>
-      </p>
-      <p>
+        {Loading ? (
+          <StyledSkeleton variant="rectangular" />
+        ) : (
+          <StyledSpan variant="caption">{tasksStats.done}</StyledSpan>
+        )}
+      </Stack>
+      <Stack component="p" direction="row" alignItems="center">
         Important:
-        <Loader isLoading={Loading} variant="dot">
-          <span className="badge bg-secondary">{tasksStats.important}</span>
-        </Loader>
-      </p>
-      <p>
+        {Loading ? (
+          <StyledSkeleton variant="rectangular" />
+        ) : (
+          <StyledSpan variant="caption">{tasksStats.important}</StyledSpan>
+        )}
+      </Stack>
+      <Stack component="p" direction="row" alignItems="center">
         Total:
-        <Loader isLoading={Loading} variant="dot">
-          <span className="badge bg-secondary">{tasksStats.total}</span>
-        </Loader>
-      </p>
-    </div>
+        {Loading ? (
+          <StyledSkeleton variant="rectangular" />
+        ) : (
+          <StyledSpan variant="caption">{tasksStats.total}</StyledSpan>
+        )}
+      </Stack>
+    </Stack>
   );
 };
 

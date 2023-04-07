@@ -1,34 +1,41 @@
-import { MouseEvent, useCallback } from 'react';
+import React, { useRef } from 'react';
 import { observer } from 'mobx-react';
 import { Controller, useForm } from 'react-hook-form';
+import { Stack } from '@mui/material';
 import { Filter } from '../Filter';
 import { TasksStoreInstance } from '../../store';
 import { DefaultValuesSearch } from '../../TaskList.constants';
+import { useDebouncedFunction } from './FormSearch.hooks';
 import { SearchParams } from 'domains/index';
 import { StatusLoading } from 'constants/index';
-import { Button, SearchInput } from 'components/index';
+import { SearchInput } from 'components/index';
 
 export const FormSearchProto = () => {
   const { statusLoadingTasks, taskLoad } = TasksStoreInstance;
-  const { control, handleSubmit, setValue } = useForm<SearchParams>({
+  const { control, watch, setValue } = useForm<SearchParams>({
     defaultValues: DefaultValuesSearch,
   });
-
   const Loading = statusLoadingTasks === StatusLoading.Loading;
 
+  const debouncedSearchTerm = useDebouncedFunction(taskLoad, 300);
+
+  React.useEffect(() => {
+    const subscription = watch((value) => debouncedSearchTerm(value));
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const refInput = useRef<null | HTMLInputElement>(null);
+  React.useEffect(() => {
+    if (refInput && refInput.current) {
+      refInput.current.focus();
+    }
+  }, [statusLoadingTasks]);
   const typeTaskChange = (tasksType: SearchParams['filterValue']) => setValue('filterValue', tasksType);
   const changeSearchInput = (searchText: SearchParams['searchValue']) => setValue('searchValue', searchText);
   const resetSearchInput = () => setValue('searchValue', '');
 
-  const onSubmit = (e: MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    handleSubmit(async (form) => {
-      await taskLoad(form);
-    })();
-  };
-
   return (
-    <form className="search-form d-flex justify-content-between mt-2">
+    <Stack component="form" direction="row" justifyContent="space-between" mt={2} mb={2}>
       <Controller
         control={control}
         name="searchValue"
@@ -38,6 +45,7 @@ export const FormSearchProto = () => {
             onChange={changeSearchInput}
             onReset={() => resetSearchInput()}
             disabled={Loading}
+            refElem={refInput}
           />
         )}
       />
@@ -46,8 +54,7 @@ export const FormSearchProto = () => {
         name="filterValue"
         render={({ field }) => <Filter value={field.value} onChange={typeTaskChange} disabled={Loading} />}
       />
-      <Button innerText="Find" onClick={onSubmit} disabled={Loading} />
-    </form>
+    </Stack>
   );
 };
 

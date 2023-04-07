@@ -61,6 +61,7 @@ export class Tasks {
     try {
       //Запрос на сервер
       this._statusLoadingTasks = StatusLoading.Loading;
+
       const { tasks, tasksStats } = await this.getTasks(this._formSearch);
       runInAction(() => {
         this._tasks = tasks;

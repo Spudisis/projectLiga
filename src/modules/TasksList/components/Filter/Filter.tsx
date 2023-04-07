@@ -1,38 +1,42 @@
+import { ToggleButton, ToggleButtonGroup } from '@mui/material';
 import { PropFilter } from './Filter.types';
-import { ClassNames } from './Filter.constants';
 import { FILTER_TYPES } from 'constants/index';
 
 export const Filter = ({ value, onChange, disabled }: PropFilter) => {
   return (
-    <div className="btn-group">
-      <button
+    <ToggleButtonGroup color="standard">
+      <ToggleButton
         type="button"
         disabled={disabled}
         onClick={() => onChange(FILTER_TYPES.ALL)}
-        className={`btn ${value === FILTER_TYPES.ALL ? ClassNames.active : ClassNames.inactive}`}>
+        selected={value === FILTER_TYPES.ALL}
+        value={FILTER_TYPES.ALL}>
         {FILTER_TYPES.ALL}
-      </button>
-      <button
+      </ToggleButton>
+      <ToggleButton
         type="button"
         disabled={disabled}
         onClick={() => onChange(FILTER_TYPES.ACTIVE)}
-        className={`btn ${value === FILTER_TYPES.ACTIVE ? ClassNames.active : ClassNames.inactive}`}>
+        selected={value === FILTER_TYPES.ACTIVE}
+        value={FILTER_TYPES.ACTIVE}>
         {FILTER_TYPES.ACTIVE}
-      </button>
-      <button
+      </ToggleButton>
+      <ToggleButton
         type="button"
         disabled={disabled}
         onClick={() => onChange(FILTER_TYPES.DONE)}
-        className={`btn ${value === FILTER_TYPES.DONE ? ClassNames.active : ClassNames.inactive}`}>
+        selected={value === FILTER_TYPES.DONE}
+        value={FILTER_TYPES.DONE}>
         {FILTER_TYPES.DONE}
-      </button>
-      <button
+      </ToggleButton>
+      <ToggleButton
         type="button"
         disabled={disabled}
         onClick={() => onChange(FILTER_TYPES.IMPORTANT)}
-        className={`btn ${value === FILTER_TYPES.IMPORTANT ? ClassNames.active : ClassNames.inactive}`}>
-        {FILTER_TYPES.IMPORTANT}
-      </button>
-    </div>
+        selected={value === FILTER_TYPES.IMPORTANT}
+        value={FILTER_TYPES.ACTIVE}>
+        {FILTER_TYPES.ACTIVE}
+      </ToggleButton>
+    </ToggleButtonGroup>
   );
 };
