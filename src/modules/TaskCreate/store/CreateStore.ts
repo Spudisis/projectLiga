@@ -1,8 +1,9 @@
-import { action, computed, makeObservable, observable } from 'mobx';
+import { action, computed, makeObservable, observable, runInAction } from 'mobx';
 import { CreateTask } from 'domains/index';
-import { Delay } from 'helpers/index';
-import { StatusLoading } from 'constants/index';
 
+import { StatusLoading } from 'constants/index';
+import { TaskAgentInstance } from 'http/index';
+import { mapToExternalAddTask } from 'helpers/index';
 type PrivateFields = '_statusLoading';
 
 export class CreateStore {
@@ -22,12 +23,14 @@ export class CreateStore {
   }
 
   createTask = async (fields: CreateTask) => {
+    this._statusLoading = StatusLoading.Loading;
     try {
-      this._statusLoading = StatusLoading.Loading;
-      //Запрос на сервер
-      await Delay();
-      console.log(fields);
-      this._statusLoading = StatusLoading.Success;
+      const externalAddTask = mapToExternalAddTask(fields);
+
+      await TaskAgentInstance.createTask(externalAddTask);
+      runInAction(() => {
+        this._statusLoading = StatusLoading.Success;
+      });
       return true;
     } catch {
       this._statusLoading = StatusLoading.Error;

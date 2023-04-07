@@ -12,6 +12,11 @@ import { TaskChange as TaskChangeForm } from 'domains/ChangeTask.entity';
 
 const TaskChangeProto = () => {
   const { statusLoading, task, getTask, changeTask } = ChangeStoreInstance;
+  const params = useParams();
+  const id = params.taskId;
+  if (!id) {
+    return <div>Нет айди</div>;
+  }
 
   const Loading = statusLoading === StatusLoading.Loading;
   const Error = statusLoading === StatusLoading.Error;
@@ -22,14 +27,9 @@ const TaskChangeProto = () => {
     resolver: yupResolver(taskChangeSchema),
   });
   const statusDone = watch('isDone');
-  const params = useParams();
-  const id = params.taskId;
+
   const [resGetTask, setResGetTask] = React.useState(true);
   const redirect = useNavigate();
-
-  if (!id) {
-    return <div>Нет айди</div>;
-  }
 
   const checkGetTask = async () => {
     const res = await getTask(id);
@@ -46,7 +46,7 @@ const TaskChangeProto = () => {
   const onSubmit = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     handleSubmit(async (form) => {
-      const res = await changeTask(form);
+      const res = await changeTask(id, form);
       if (res) {
         redirect(ROOT);
       }

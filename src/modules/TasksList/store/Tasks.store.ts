@@ -1,9 +1,9 @@
-import { makeObservable, observable, computed, action } from 'mobx';
+import { makeObservable, observable, computed, action, runInAction } from 'mobx';
 import { DefaultValuesSearch } from '../TaskList.constants';
 import { SearchParams, TaskEntity, TasksStatsEntity } from 'domains/index';
-import { TasksMock, TasksStatsMock } from '__mocks__/index';
-import { Delay } from 'helpers/index';
+import { TaskAgentInstance } from 'http/index';
 import { StatusLoading } from 'constants/index';
+import { getInternalInfo, mapToExternalParams, mapToInternalTasks } from 'helpers/index';
 
 type FieldsPrivate = '_statusLoadingTasks' | '_tasks' | '_tasksStats' | '_formSearch';
 
@@ -45,7 +45,15 @@ export class Tasks {
   get tasksStats() {
     return this._tasksStats;
   }
-
+  getTasks = async (params?: SearchParams) => {
+    const externalSearchParams = mapToExternalParams(params);
+    const res = await TaskAgentInstance.getAllTasks(externalSearchParams);
+    const tasksInternal = mapToInternalTasks(res);
+    return {
+      tasks: tasksInternal,
+      tasksStats: getInternalInfo(tasksInternal),
+    };
+  };
   taskLoad = async (params?: SearchParams) => {
     if (params) this._formSearch = params;
 
@@ -53,12 +61,12 @@ export class Tasks {
     try {
       //Запрос на сервер
       this._statusLoadingTasks = StatusLoading.Loading;
-      await Delay();
-
-      console.log(params);
-      this._tasks = TasksMock;
-      this._tasksStats = TasksStatsMock;
-      this._statusLoadingTasks = StatusLoading.Success;
+      const { tasks, tasksStats } = await this.getTasks(this._formSearch);
+      runInAction(() => {
+        this._tasks = tasks;
+        this._tasksStats = tasksStats;
+        this._statusLoadingTasks = StatusLoading.Success;
+      });
     } catch {
       this._statusLoadingTasks = StatusLoading.Error;
     }
@@ -67,47 +75,54 @@ export class Tasks {
   changeImportantTask = async (id: TaskEntity['id'], statusImportant: TaskEntity['isImportant']) => {
     this._statusLoadingTasks = StatusLoading.Loading;
 
-    console.log('changeimportant', id, !statusImportant);
-    // try {
-    //   //Запрос на сервер
-    //   this._task = task;
-    //return true;
-    // } catch {
-    //    return false;
-    // } finally {
-    //   this._statusLoading = false;
-    // }
-    this.taskLoad();
+    try {
+      await TaskAgentInstance.updateTask(id, {
+        isImportant: !statusImportant,
+      });
+      const { tasks, tasksStats } = await this.getTasks(this._formSearch);
+      runInAction(() => {
+        this._tasks = tasks;
+        this._tasksStats = tasksStats;
+        this._statusLoadingTasks = StatusLoading.Success;
+      });
+    } catch {
+      this._statusLoadingTasks = StatusLoading.Error;
+    }
   };
 
   changeCompleteTask = async (id: TaskEntity['id'], statusComplete: TaskEntity['isDone']) => {
     this._statusLoadingTasks = StatusLoading.Loading;
-    console.log('changeIsDone', id, statusComplete);
-    // try {
-    //   //Запрос на сервер
-    //   this._task = task;
-    //return true;
-    // } catch {
-    //    return false;
-    // } finally {
-    //   this._statusLoading = false;
-    // }
-    this.taskLoad();
+
+    try {
+      await TaskAgentInstance.updateTask(id, {
+        isCompleted: !statusComplete,
+        isImportant: statusComplete ? undefined : false,
+      });
+      const { tasks, tasksStats } = await this.getTasks(this._formSearch);
+      runInAction(() => {
+        this._tasks = tasks;
+        this._tasksStats = tasksStats;
+        this._statusLoadingTasks = StatusLoading.Success;
+      });
+    } catch {
+      this._statusLoadingTasks = StatusLoading.Error;
+    }
   };
 
   taskDelete = async (id: TaskEntity['id']) => {
     this._statusLoadingTasks = StatusLoading.Loading;
-    console.log('delete', id);
-    // try {
-    //   //Запрос на сервер
-    //   this._task = task;
-    //return true;
-    // } catch {
-    //    return false;
-    // } finally {
-    //   this._statusLoading = false;
-    // }
-    this.taskLoad();
+
+    try {
+      await TaskAgentInstance.deleteTask(id);
+      const { tasks, tasksStats } = await this.getTasks(this._formSearch);
+      runInAction(() => {
+        this._tasks = tasks;
+        this._tasksStats = tasksStats;
+        this._statusLoadingTasks = StatusLoading.Success;
+      });
+    } catch {
+      this._statusLoadingTasks = StatusLoading.Error;
+    }
   };
 }
 
