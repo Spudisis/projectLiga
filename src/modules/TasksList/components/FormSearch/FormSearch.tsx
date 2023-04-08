@@ -17,19 +17,19 @@ export const FormSearchProto = () => {
   });
   const Loading = statusLoadingTasks === StatusLoading.Loading;
 
-  const debouncedSearchTerm = useDebouncedFunction(taskLoad, 300);
+  const debouncedSearch = useDebouncedFunction(taskLoad, 300);
 
   React.useEffect(() => {
-    const subscription = watch((value) => debouncedSearchTerm(value));
+    const subscription = watch((value) => debouncedSearch(value));
     return () => subscription.unsubscribe();
   }, []);
 
-  const refInput = useRef<null | HTMLInputElement>(null);
+  const refInput = useRef<HTMLInputElement>(null);
+
   React.useEffect(() => {
-    if (refInput && refInput.current) {
-      refInput.current.focus();
-    }
-  }, [statusLoadingTasks]);
+    if (!Loading && refInput.current) refInput.current.focus();
+  }, [Loading]);
+
   const typeTaskChange = (tasksType: SearchParams['filterValue']) => setValue('filterValue', tasksType);
   const changeSearchInput = (searchText: SearchParams['searchValue']) => setValue('searchValue', searchText);
   const resetSearchInput = () => setValue('searchValue', '');

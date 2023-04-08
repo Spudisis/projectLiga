@@ -5,3 +5,4 @@ export * from './Checkbox';
 export * from './Loader';
 export * from './Button';
 export * from './ErrorMessage';
+export * from './Link';

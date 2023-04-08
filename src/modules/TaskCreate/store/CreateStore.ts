@@ -22,12 +22,12 @@ export class CreateStore {
     return this._statusLoading;
   }
 
-  createTask = async (fields: CreateTask) => {
+  createTask = async (fields: CreateTask): Promise<boolean> => {
     this._statusLoading = StatusLoading.Loading;
     try {
       const externalAddTask = mapToExternalAddTask(fields);
-
       await TaskAgentInstance.createTask(externalAddTask);
+
       runInAction(() => {
         this._statusLoading = StatusLoading.Success;
       });

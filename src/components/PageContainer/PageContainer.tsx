@@ -1,7 +1,10 @@
-import React from 'react';
-import './PageContainer.css';
 import { PageContainerProps } from './PageContainer.types';
+import { StyledContainer } from './PageContainer.styles';
 
-export function PageContainer({ children, className = '' }: PageContainerProps) {
-  return <div className={`container ${className}`}>{children}</div>;
+export function PageContainer({ children }: PageContainerProps) {
+  return (
+    <StyledContainer direction="column" alignItems="stretch" justifyContent="center">
+      {children}
+    </StyledContainer>
+  );
 }

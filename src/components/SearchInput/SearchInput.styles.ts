@@ -22,4 +22,7 @@ export const StyledContainer = styled(Container)({
   padding: '0px',
   width: 'auto',
   marginLeft: '0px',
+  ['input']: {
+    paddingRight: '50px',
+  },
 });

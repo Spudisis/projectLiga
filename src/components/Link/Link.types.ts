@@ -1,5 +1,6 @@
 import { ReactNode } from 'react';
 
-export interface ErrorMessageProps {
+export type StyledLinkType = {
+  path: string;
   children: ReactNode;
-}
+};

@@ -20,10 +20,10 @@ export function SearchInput({ onChange, value, onReset, disabled, refElem }: Sea
         onChange={onSearchInputChange}
         value={value}
         disabled={disabled}
-        ref={refElem}
+        inputRef={refElem}
       />
       {value && (
-        <StyledButton variant="text" onClick={onResetBtnClick}>
+        <StyledButton variant="text" onClick={onResetBtnClick} disabled={disabled}>
           <i className="fa fa-close"></i>
         </StyledButton>
       )}

@@ -6,7 +6,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { ChangeStoreInstance } from './store';
 import { taskChangeSchema } from './TaskChange.validation';
 
-import { Button, Checkbox, ErrorMessage, Loader, TextField } from 'components/index';
+import { ButtonMUI, Checkbox, ErrorMessage, Loader, TextField } from 'components/index';
 import { ROOT, StatusLoading } from 'constants/index';
 import { TaskChange as TaskChangeForm } from 'domains/ChangeTask.entity';
 
@@ -117,7 +117,7 @@ const TaskChangeProto = () => {
 
       {resGetTask ? (
         <Loader isLoading={Loading}>
-          <Button innerText="Change" onClick={onSubmit} />
+          <ButtonMUI innerText="Change" onClick={onSubmit} />
         </Loader>
       ) : (
         <ErrorMessage>

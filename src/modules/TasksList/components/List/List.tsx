@@ -1,47 +1,52 @@
 import React from 'react';
 
 import { observer } from 'mobx-react';
-import { Task } from '../Task/index';
+import { Button, Grid } from '@mui/material';
+import { Task } from '../Task';
 import { TasksStoreInstance } from '../../store';
-import { ClassesContainer } from './List.constants';
+
+import { NotFoundTask } from '../NotFoundTask';
+import { StyledSkeleton } from './List.styles';
 import { StatusLoading } from 'constants/index';
-import { Button, ErrorMessage, Loader } from 'components/index';
+import { ErrorMessage } from 'components/index';
 
 const ListProto = () => {
   const { tasks, statusLoadingTasks, taskDelete, changeCompleteTask, changeImportantTask, taskLoad } =
     TasksStoreInstance;
 
-  const ClassContainer = statusLoadingTasks === StatusLoading.Loading ? ClassesContainer.flex : ClassesContainer.none;
-
   const Loading = statusLoadingTasks === StatusLoading.Loading;
   const Error = statusLoadingTasks === StatusLoading.Error;
+
+  const emptyArray: unknown[] = [...Array(10)];
 
   const RepeatRequestTasks = () => {
     taskLoad();
   };
 
   return (
-    <div className={`container ${ClassContainer}`}>
+    <Grid container rowSpacing={1}>
       {Error && (
         <ErrorMessage>
           <span>Что-то пошло не так</span>
-          <Button innerText="Получить таски" onClick={RepeatRequestTasks} />
+          <Button onClick={RepeatRequestTasks}>Попробовать ещё раз</Button>
         </ErrorMessage>
       )}
-      <Loader isLoading={Loading}>
-        {tasks.length > 0
-          ? tasks.map((elem) => (
-              <Task
-                elem={elem}
-                deleteTask={taskDelete}
-                changeComplete={changeCompleteTask}
-                changeImportant={changeImportantTask}
-                key={elem.id}
-              />
-            ))
-          : 'Тасков нет'}
-      </Loader>
-    </div>
+      {Loading ? (
+        emptyArray.map((_, index) => <StyledSkeleton variant="rectangular" width={576} height={160} key={index} />)
+      ) : tasks.length > 0 ? (
+        tasks.map((elem) => (
+          <Task
+            elem={elem}
+            deleteTask={taskDelete}
+            changeComplete={changeCompleteTask}
+            changeImportant={changeImportantTask}
+            key={elem.id}
+          />
+        ))
+      ) : (
+        <NotFoundTask />
+      )}
+    </Grid>
   );
 };
 

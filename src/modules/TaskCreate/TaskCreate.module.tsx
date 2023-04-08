@@ -3,12 +3,11 @@ import { observer } from 'mobx-react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Controller, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-
 import { CreateStoreInstance } from './store/CreateStore';
 import { taskCreateSchema } from './TaskCreate.validation';
 import { DefaultValuesAddTask } from './TaskCreate.constants';
 import { CreateTask } from 'domains/index';
-import { Button, Checkbox, ErrorMessage, Loader, TextField } from 'components/index';
+import { Checkbox, ErrorMessage, Loader, TextField, ButtonMUI } from 'components/index';
 import { ROOT, StatusLoading } from 'constants/index';
 
 const TaskCreateProto = () => {
@@ -77,7 +76,7 @@ const TaskCreateProto = () => {
           )}
         />
         <Loader isLoading={Loading}>
-          <Button innerText="Create" onClick={onSubmit} />
+          <ButtonMUI innerText="Create" onClick={onSubmit} />
         </Loader>
         {Error && (
           <ErrorMessage>

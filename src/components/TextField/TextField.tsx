@@ -1,32 +1,30 @@
 import React from 'react';
 import { TextFieldProps } from './TextField.types';
-import './TextField.css';
+
+import { StyledTextField, StyledBox } from './TextField.styles';
 
 export function TextField({
   label,
   disabled = false,
   placeholder,
-  containerClassName = '',
   inputType,
   value,
   onChange,
   errorText,
 }: TextFieldProps) {
   return (
-    <div className={`mb-3 ${containerClassName}`}>
-      <label htmlFor={label} className="form-label">
-        {label}
-      </label>
-      <input
+    <StyledBox>
+      <StyledTextField
+        multiline
+        error={errorText ? true : false}
+        label={label}
         disabled={disabled}
         type={inputType}
-        className="form-control"
-        id={label}
         placeholder={placeholder}
         value={value}
         onChange={onChange}
+        helperText={errorText}
       />
-      {errorText && <div className="invalid">{errorText}</div>}
-    </div>
+    </StyledBox>
   );
 }

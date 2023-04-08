@@ -5,7 +5,7 @@ export interface TextFieldProps {
   disabled?: boolean;
   placeholder?: string;
   inputType?: HTMLInputTypeAttribute;
-  containerClassName?: string;
+
   value?: string;
   onChange?: ChangeEventHandler<HTMLInputElement>;
   errorText?: string;

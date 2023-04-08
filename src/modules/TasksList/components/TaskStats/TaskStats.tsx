@@ -1,7 +1,7 @@
 import { observer } from 'mobx-react';
 import { Stack } from '@mui/material';
 import { TasksStoreInstance } from '../../store';
-import { StyledSpan, StyledSkeleton } from './TaskStats.style';
+import { StyledSpan, StyledSkeleton } from './TaskStats.styles';
 import { StatusLoading } from 'constants/index';
 
 const TaskStatsProto = () => {

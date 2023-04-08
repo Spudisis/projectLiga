@@ -34,8 +34,8 @@ export const Filter = ({ value, onChange, disabled }: PropFilter) => {
         disabled={disabled}
         onClick={() => onChange(FILTER_TYPES.IMPORTANT)}
         selected={value === FILTER_TYPES.IMPORTANT}
-        value={FILTER_TYPES.ACTIVE}>
-        {FILTER_TYPES.ACTIVE}
+        value={FILTER_TYPES.IMPORTANT}>
+        {FILTER_TYPES.IMPORTANT}
       </ToggleButton>
     </ToggleButtonGroup>
   );

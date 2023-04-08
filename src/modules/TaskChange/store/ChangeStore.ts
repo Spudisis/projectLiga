@@ -37,7 +37,7 @@ export class ChangeStore {
 
       const task = await TaskAgentInstance.getOneTask(id);
       const internalTask = mapToInternalOneTask(task);
-      // throw new Error();
+
       runInAction(() => {
         this._task = internalTask;
         this._statusLoading = StatusLoading.Success;
@@ -53,6 +53,7 @@ export class ChangeStore {
     try {
       this._statusLoading = StatusLoading.Loading;
       const externalSendData = mapToExternalChangeTask(task);
+
       await TaskAgentInstance.updateTask(id, externalSendData);
 
       this._statusLoading = StatusLoading.Success;

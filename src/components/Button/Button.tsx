@@ -1,10 +1,11 @@
 import React from 'react';
+import { Button } from '@mui/material';
 import { ButtonProp } from './Button.types';
 
-export const Button = ({ innerText, onClick, disabled = false }: ButtonProp) => {
+export const ButtonMUI = ({ innerText, onClick }: ButtonProp) => {
   return (
-    <button className="btn btn-primary btn-lg" onClick={onClick} disabled={disabled}>
+    <Button variant="contained" onClick={onClick} size="large">
       {innerText}
-    </button>
+    </Button>
   );
 };
