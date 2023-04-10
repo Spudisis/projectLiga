@@ -45,7 +45,12 @@ export class Tasks {
   get tasksStats() {
     return this._tasksStats;
   }
-  getTasks = async (params?: SearchParams) => {
+  getTasks = async (
+    params?: SearchParams
+  ): Promise<{
+    tasks: TaskEntity[];
+    tasksStats: TasksStatsEntity;
+  }> => {
     const externalSearchParams = mapToExternalParams(params);
     const res = await TaskAgentInstance.getAllTasks(externalSearchParams);
     const tasksInternal = mapToInternalTasks(res);
@@ -54,12 +59,11 @@ export class Tasks {
       tasksStats: getInternalInfo(tasksInternal),
     };
   };
-  taskLoad = async (params?: SearchParams) => {
+  taskLoad = async (params?: SearchParams): Promise<void> => {
     if (params) this._formSearch = params;
 
     this._statusLoadingTasks = StatusLoading.Success;
     try {
-      //Запрос на сервер
       this._statusLoadingTasks = StatusLoading.Loading;
 
       const { tasks, tasksStats } = await this.getTasks(this._formSearch);
@@ -73,7 +77,7 @@ export class Tasks {
     }
   };
 
-  changeImportantTask = async (id: TaskEntity['id'], statusImportant: TaskEntity['isImportant']) => {
+  changeImportantTask = async (id: TaskEntity['id'], statusImportant: TaskEntity['isImportant']): Promise<void> => {
     this._statusLoadingTasks = StatusLoading.Loading;
 
     try {
@@ -91,7 +95,7 @@ export class Tasks {
     }
   };
 
-  changeCompleteTask = async (id: TaskEntity['id'], statusComplete: TaskEntity['isDone']) => {
+  changeCompleteTask = async (id: TaskEntity['id'], statusComplete: TaskEntity['isDone']): Promise<void> => {
     this._statusLoadingTasks = StatusLoading.Loading;
 
     try {
@@ -110,7 +114,7 @@ export class Tasks {
     }
   };
 
-  taskDelete = async (id: TaskEntity['id']) => {
+  taskDelete = async (id: TaskEntity['id']): Promise<void> => {
     this._statusLoadingTasks = StatusLoading.Loading;
 
     try {

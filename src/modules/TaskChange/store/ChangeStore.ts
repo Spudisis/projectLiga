@@ -31,7 +31,7 @@ export class ChangeStore {
     return this._task;
   }
 
-  getTask = async (id: string) => {
+  getTask = async (id: string): Promise<boolean> => {
     try {
       this._statusLoading = StatusLoading.Loading;
 
@@ -49,7 +49,7 @@ export class ChangeStore {
     }
   };
 
-  changeTask = async (id: string, task: TaskChangeForm) => {
+  changeTask = async (id: string, task: TaskChangeForm): Promise<boolean> => {
     try {
       this._statusLoading = StatusLoading.Loading;
       const externalSendData = mapToExternalChangeTask(task);
