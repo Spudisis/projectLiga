@@ -1,9 +1,6 @@
 # React todo project
 npm run dev - запустить проект
 
-## Пример итогового проекта
-https://todo-liga-internship.vercel.app/
-
 ## Технологии которые используются в проекте
 
 React, React-router-dom, Typescript, MobX, Axios, React Hook Form, Yup
